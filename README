@@ -1,0 +1,18 @@
+= ruby_ngrams
+
+== License
+
+Copyright 2011 Martin Velez
+
+== Features
+
+* parses a string into a set of n-grams
+
+== Installation
+
+* gem install ruby_ngrams
+
+== Usage
+
+usage goes here
+
