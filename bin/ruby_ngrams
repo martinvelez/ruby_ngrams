@@ -1,0 +1,12 @@
+#!/usr/bin/ruby -w
+
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams"))
+
+text = "Hello World"
+for i in 1..text.size
+	puts "n = #{i}"
+	n = Ngrams.new(text, i, -999)
+	puts n.ngrams
+	puts "Count = #{n.ngrams.size}"
+	puts "--------------"
+end
