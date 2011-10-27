@@ -1,12 +1,36 @@
 #!/usr/bin/ruby -w
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_cli"))
 
-text = "Hello World"
-for i in 1..text.size
-	puts "n = #{i}"
-	ngrams = Ngrams::extract(text, i, -999)
-	puts ngrams
-	puts "Count = #{ngrams.size}"
-	puts "--------------"
+if __FILE__ == $0
+
+	#Every CLI app needs to handle options and arguments
+	options = {:n => 2, :unit => "char"}
+	arguments = {:infile => nil}
+
+	#This is the actual command of this CLI app
+	# A CLI app should not have to validate options and arguments.
+	# This work needs to be delegated to the library that will use
+	# the options and arguments.
+	# A CLI app needs to run command instructions which call at 
+	# least one class or library to do the actual work.
+	command = Proc.new do |options, arguments|
+		f = File.open(arguments[:infile], "r")
+		text = f.read
+		ngrams = Ngrams::extract(text, options[:n], options[:unit])
+		puts ngrams
+	end
+
+	app = RubyCLI.new(ARGV, arguments, command)
+	app.options = {:n => 2, :unit => "char"}
+	app.opt_parser.on('-n NUM', Integer, 'set length n for n-grams') do |n|
+		app.options[:n] = n
+	end
+	app.opt_parser.on('-u','--unit UNIT',[:char,:line], 'select unit type') do |u|
+		app.options[:unit] = u
+	end 
+	
+	exit app.run
+	
 end
