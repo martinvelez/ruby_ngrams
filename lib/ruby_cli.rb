@@ -9,26 +9,24 @@ require 'optparse'
 
 class RubyCLI
 
-	attr_accessor :options
-	attr_reader :opt_parser
+	attr_accessor :opt_parser, :command
 	
-	def initialize(default_argv, arguments = {}, command) 
+	def initialize(default_argv, usage) 
 		@default_argv = default_argv 
 		@options = {:help => false, :verbose => false}
-		@arguments = arguments
-		@opt_parser = @opt_parser = OptionParser.new do |opts|
-			opts.banner = "Usage: #{__FILE__} [options] INFILE"
-			opts.separator ""
-			opts.separator "Specific options:"	
+		@arguments = {}
+		@opt_parser = OptionParser.new do |opts|
+			opts.banner =		usage
+			opts.separator 	""
+			opts.separator 	"Specific options:"	
 		end
-		@command = command
+		@command = nil
 	end
 
 	# Run the application
   def run
     if parsed_options? && arguments_valid?
-			process_options
-      process_arguments
+			process_options; process_arguments
       (output_options; output_arguments) if @options[:verbose]
       process_command
     else
@@ -52,7 +50,10 @@ class RubyCLI
 
 	# Check if the required number of arguments remains in the 
 	# argv array after it has been processed by the option parser
-	def arguments_valid?() @default_argv.size == @arguments.size end
+	def arguments_valid?() 
+		puts @default_argv.size == @arguments.size 
+		@default_argv.size == @arguments.size 
+	end
 	
 	# Setup the arguments
 	def process_arguments
@@ -71,7 +72,7 @@ class RubyCLI
 		exit 0
 	end
 
-  def output_help(exit_code) puts @opt_parser; return exit_code end
+  def output_help(exit_code) puts @opt_parser; exit exit_code end
 
 	def output_options
     puts "OPTIONS:"
@@ -84,5 +85,8 @@ class RubyCLI
     @arguments.each {|name,value| puts "\t#{name} = #{value}"}
 		puts "\tNo arguments" if @arguments.length == 0
   end
+
+	def default_options(cli_options) @options.merge(cli_options); end
+	def default_arguments(cli_arguments) @arguments.merge(cli_arguments); end
 
 end # Application
