@@ -3,17 +3,19 @@
 #It add methods to extract a set of n-grams from a string.
 class String
 
-	#An N-gram is a sequence of N units, or tokens, of text, whre those units are 
+	#An N-gram is a sequence of N units, or tokens, of text, where those units are 
 	#typically single characters or strings that are delimited by spaces.
 	#However, a token could also be a fixed length character sequence, strings 
 	#with embedded spaces, etc. depending on the intended application.
 	#Typically, n-grams formed of contiguous tokens.
-	def ngrams(options = {:unit => "char", :ignore_punctuation => false, :n => 1})
-		unit_types = ["char","c", "word","w", "line","l"]
+	#
+	#regex
+	#	// => character
+	#	/\W/ => word, ignore punctuaction
+	
+	def ngrams(options = {:split_regex=>//, :n=>1})
 		
-		raise "unit type must be in #{unit_types.inspect}" unless unit_types.include?(options[:unit])
-		
-		tokens = self.tokenize(unit, options[:ignore_punctuation])
+		tokens = self.split(options[:split_regex])
 		ngrams = []
 				
 		max_pos = tokens.length - options[:n]
@@ -23,25 +25,18 @@ class String
 		ngrams
 	end
 	
-	def tokenize(options = {:unit => "char", :ignore_punctuation => false})
-		tokens = []
-		case unit
-		when "char", "c"
-			tokens = self.split(//)
-		when "word", "w"
-			tokens = self.split(/\s+/)
-		when "line", "l"
-			self.each_line do |line|
-				tokens << line
-			end
-		end
-		puts tokens.inspect
-		return tokens
+	def unigrams(options = {:split_regex=>//, :n => 1}) 
+		ngrams(options)
 	end
 	
-	def unigrams(unit) ngrams(options = {:unit => "char", :ignore_punctuation => false, :n => 1}); end
-	def bigrams(unit) ngrams(options = {:unit => "char", :ignore_punctuation => false, :n => 2}); end
-	def trigrams(unit) ngrams(options = {:unit => "char", :ignore_punctuation => false, :n => 3}); end
-end
+	def bigrams(options = {:split_regex=>//, :n => 2}) 
+		ngrams(options)
+	end
+	
+	def trigrams(options = {:split_regex=>//, :n => 3}) 
+		ngrams(options)
+	end
+
+end #class String
 
 
