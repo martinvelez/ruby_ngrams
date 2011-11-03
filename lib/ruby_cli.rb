@@ -11,15 +11,12 @@ class RubyCLI
 
 	attr_accessor :opt_parser, :command
 	
-	def initialize(default_argv, usage) 
+	def initialize(default_argv, command_name) 
 		@default_argv = default_argv 
-		@options = {:help => false, :verbose => false}
+		@command_name = command_name
+		@options = {:help => false, :verbose => false, :quiet => false}
 		@arguments = {}
-		@opt_parser = OptionParser.new do |opts|
-			opts.banner =		usage
-			opts.separator 	""
-			opts.separator 	"Specific options:"	
-		end
+		@opt_parser = nil
 		@command = nil
 	end
 
@@ -51,7 +48,6 @@ class RubyCLI
 	# Check if the required number of arguments remains in the 
 	# argv array after it has been processed by the option parser
 	def arguments_valid?() 
-		puts @default_argv.size == @arguments.size 
 		@default_argv.size == @arguments.size 
 	end
 	
@@ -76,17 +72,27 @@ class RubyCLI
 
 	def output_options
     puts "OPTIONS:"
-    @options.each {|name, value| puts "\t#{name} = #{value}"}
-		puts "\tNo options" if @options.length == 0
+    @options.each {|name, value| puts "#{name} = #{value}"}
+		puts "No options" if @options.length == 0
   end
 
   def output_arguments
     puts "ARGUMENTS:"
-    @arguments.each {|name,value| puts "\t#{name} = #{value}"}
-		puts "\tNo arguments" if @arguments.length == 0
+    @arguments.each {|name,value| puts "#{name} = #{value}"}
+		puts "No arguments" if @arguments.length == 0
   end
 
-	def default_options(cli_options) @options.merge(cli_options); end
-	def default_arguments(cli_arguments) @arguments.merge(cli_arguments); end
+	def default_options(command_options) 
+		@options.merge(command_options)
+		@opt_parser = OptionParser.new do |opts|
+			opts.banner =		usage
+			opts.separator 	""
+			opts.separator 	"Specific options:"	
+		end
+	end
+	
+	def arguments(command_arguments) 
+		@arguments.merge(command_arguments)
+	end
 
 end # Application
