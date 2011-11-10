@@ -1,98 +1,95 @@
 require 'optparse'
 
-# This is the actual command of this CLI app
-# A CLI app should not have to validate options and arguments.
-# This work needs to be delegated to the library that will use
-# the options and arguments.
-# A CLI app needs to run command instructions which call at 
-# least one class or library to do the actual work.
+# What does a command line application need to do?
+#	1. 
+# This module serves as a mixin for Ruby Command Line Applications (CLI).
+# Ruby commands can be written much easier by including this class and following
+# the convention that I have outlined here.
+#
+# This is the core algorithm of any Ruby CLI application.
+# def run
+#   if parse_options? && arguments_valid?
+#		process_options
+#     process_arguments
+#     output_options_and_arguments if @default_options[:verbose]
+#     command
+#   else
+#     output_help(1)
+#   end
+#  end
+module RubyCLI
 
-class RubyCLI
-
-	attr_accessor :opt_parser, :command
-	
-	def initialize(default_argv, command_name) 
-		@default_argv = default_argv 
-		@command_name = command_name
-		@options = {:help => false, :verbose => false, :quiet => false}
+	# Initialization of this application requires the command line arguments.
+	def initialize(default_argv)
+		@default_argv = default_argv
+		@default_options = {:help => false, :verbose => false}
 		@arguments = {}
+		@options = {}
 		@opt_parser = nil
-		@command = nil
 	end
 
 	# Run the application
   def run
-    if parsed_options? && arguments_valid?
-			process_options; process_arguments
-      (output_options; output_arguments) if @options[:verbose]
-      process_command
+    if parse_options? && arguments_valid?
+			process_options
+      process_arguments
+      output_options_and_arguments if @default_options[:verbose]
+      command
     else
       output_help(1)
     end
   end
 	
 	# Parse the options
-	def parsed_options?
-		#We need to parse the command line
-		@opt_parser.on('-h', '--help', 'Displays help information') do
-			@options[:help] = true
-			output_help(0)
+	def parse_options?
+		raise "This method should be overwritten." 
+		#configure an OptionParser
+		@opt_parser = OptionParser.new do |opts|		
+			opts.banner = "Usage: #{__FILE__} [OPTIONS]... [FILE]..."
+			opts.separator ""
+			opts.separator "Specific options:"
+			opts.on('-h', '--help', 'displays help information') do
+				@default_options[:help] = true
+				output_help(0)
+			end
+			opts.on('-V','--verbose','Run verbosely') do 
+				@default_options[:verbose] = true
+			end
+			# ADD command specific options here
 		end
-		@opt_parser.on('-V','--verbose','Run verbosely') do
-			@options[:verbose] = true 
-		end
-		@opt_parser.parse!(@default_argv) rescue return false
+		@opt_parser.parse!(@arguments) rescue return false
 		true
 	end
 
 	# Check if the required number of arguments remains in the 
 	# argv array after it has been processed by the option parser
 	def arguments_valid?() 
+		return true if @arguments.size == 0
 		@default_argv.size == @arguments.size 
 	end
-	
-	# Setup the arguments
-	def process_arguments
-		@arguments.each do |key, value|
-			@arguments[key] = @default_argv.shift	
-		end
-		true
-	end
-	
-	# Performs post-parse processing on options
-	# For instance, some options may cancel others or have higher importance
-	def process_options()	true end	
-	
-	def process_command
-		@command.call(@options, @arguments)
-		exit 0
-	end
 
-  def output_help(exit_code) puts @opt_parser; exit exit_code end
-
-	def output_options
+	def output_options_and_arguments
     puts "OPTIONS:"
-    @options.each {|name, value| puts "#{name} = #{value}"}
-		puts "No options" if @options.length == 0
+    @options.each {|name, value| puts "\t#{name} = #{value}"}
+		puts "\tNo options" if @options.length == 0
+		
+		puts "ARGUMENTS:"
+    @arguments.each {|name,value| puts "\t#{name} = #{value}"}
+		puts "\tNo arguments" if @arguments.length == 0
   end
 
-  def output_arguments
-    puts "ARGUMENTS:"
-    @arguments.each {|name,value| puts "#{name} = #{value}"}
-		puts "No arguments" if @arguments.length == 0
-  end
-
-	def default_options(command_options) 
-		@options.merge(command_options)
-		@opt_parser = OptionParser.new do |opts|
-			opts.banner =		usage
-			opts.separator 	""
-			opts.separator 	"Specific options:"	
-		end
+	# Performs post-parse processing on options
+	# For instance, some options may be mutually exclusive
+	def process_options() raise "This method should be overwritten." end	
+	def process_arguments() raise "This method should be overwritten." end
+	# Application logic
+	
+	def command() raise "This method should be overwritten." end
+	
+	def output_help(exit_code) 
+		puts @opt_parser
+		puts exit_code if @default_options[:verbose]
+		return exit_code 
 	end
 	
-	def arguments(command_arguments) 
-		@arguments.merge(command_arguments)
-	end
-
 end # Application

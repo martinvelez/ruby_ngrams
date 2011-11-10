@@ -1,29 +1,64 @@
 #!/usr/bin/ruby -w
 
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams"))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_cli"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams.rb"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_cli.rb"))
 
-if __FILE__ == $0
+class App 
+	include RubyCLI	
 
-	app = RubyCLI.new(ARGV, __FILE__, false)
-	app.arguments({:files => {:val => ARGF, :required => false}})
-	app.add_option(:n => ['-n NUM', Integer, 'set length n for n-grams'])
-	app.add_option(:unit => ['-u','--unit UNIT',["char","word","line"], 'select unit type'])
+	# Define the constructor to 
+	def initialize(default_argv)
+		@default_argv = default_argv
+		@default_options = {:help => false, :verbose => false}
+		@arguments = {}
+		@options = {:regex => //, :n => 2}
+		@opt_parser = nil
+	end
 
-	#This is the actual command of this CLI app
-	# A CLI app should not have to validate options and arguments.
-	# This work needs to be delegated to the library that will use
-	# the options and arguments.
-	# A CLI app needs to run command instructions which call at 
-	# least one class or library to do the actual work.
-	app.command = Proc.new do |options, arguments|
-		text = arguments[:files][:val].read
-		ngrams = Ngrams::extract(text, options[:n], options[:unit])
-		puts ngrams
+	# Define an OptionParser to parse the command line
+	def parse_options?
+		#configure an OptionParser
+		@opt_parser = OptionParser.new do |opts|		
+			opts.banner = "Usage: #{__FILE__} [OPTIONS]... [FILE]..."
+			opts.separator ""
+			opts.separator "Specific options:"
+			opts.on('-h', '--help', 'displays help information') do
+				@default_options[:help] = true
+				output_help
+			end
+			opts.on('-V','--verbose','Run verbosely') do 
+				@default_options[:verbose] = true
+			end
+			opts.on('-n', '--n NUM', Integer, 'set length n for n-grams') do |n|
+				@options[:n] = n
+			end
+			opts.on('-r', '--regex REGEX', Regexp, 'set regex to split string into tokens') do |r|
+				@options[:regex] = r
+			end
+		end
+		@opt_parser.parse!(@default_argv) rescue return false
+		true
 	end
 	
-	exit app.run
-	
-	ngrams = Ngrams::extract(input, n, unit)
+	def process_options() true end
+
+	# If arguments were provided, then they have to be names of files.
+	# These files will be handled using Ruby's ARGF builtin variable.
+	def process_arguments()	true end
+
+	# Application logic
+	def command
+		text = ARGF.read
+		text.ngrams(@options).each do |ngram|
+			puts ngram.inspect
+		end
+	end
 
 end
+
+
+if __FILE__ == $0
+	app = App.new(ARGV)
+	app.run
+end
+
