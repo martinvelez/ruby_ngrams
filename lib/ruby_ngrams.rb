@@ -19,6 +19,7 @@ class String
 	#		/\n+/ => splits into lines delimted by one or more newline characters
 	#
 	# TODO: Determine efficiency of this function on long strings.
+	# TODO: Determine how well this works on strings in binary format.
 	def ngrams(options = {:regex=>//, :n=>2})
 		ngrams = []
 		tokens = self.split(options[:regex])

@@ -3,17 +3,10 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams.rb"))
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_cli.rb"))
 
-class App 
+class App
 	include RubyCLI	
 
-	# Define the constructor to 
-	def initialize(default_argv)
-		@default_argv = default_argv
-		@default_options = {:help => false, :verbose => false}
-		@arguments = {}
-		@options = {:regex => //, :n => 2}
-		@opt_parser = nil
-	end
+	def define_command_options() @options = {:regex => //, :n => 2}	end
 
 	# Define an OptionParser to parse the command line
 	def parse_options?
@@ -44,14 +37,18 @@ class App
 
 	# If arguments were provided, then they have to be names of files.
 	# These files will be handled using Ruby's ARGF builtin variable.
+	# If arguments are not filenames, then this application will produce a 
+	# a runtime error informing the user that the given file could not be opened.
 	def process_arguments()	true end
 
-	# Application logic
 	def command
+		# ARGF is a stream designed for use in scripts that process files given as 
+		#	command-line arguments or passed in via STDIN.
+		# The arguments passed to your script are stored in the ARGV Array, 
+		#	one argument per element. ARGF assumes that any arguments that aren’t 
+		# filenames have been removed from ARGV.
 		text = ARGF.read
-		text.ngrams(@options).each do |ngram|
-			puts ngram.inspect
-		end
+		text.ngrams(@options).each { |ngram| puts ngram.inspect }
 	end
 
 end

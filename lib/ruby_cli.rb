@@ -1,7 +1,20 @@
 require 'optparse'
 
-# What does a command line application need to do?
-#	1. 
+# The goal of this library is to factor out code needed to create Ruby 
+# command line applications which follow the Unix Philosophy design method 
+# (http://www.faqs.org/docs/artu/ch01s06.html).
+#
+# What does a command line application library need to do?
+#	1. Provide a UI
+#	a. Process options
+# b. Process arguments
+# 2. Pass options and arguments as parameters to other functions defined in
+#	libraries or other executables.
+#
+# What does a command line application library need not do?
+# 1. A command line application does not need to validate options or arguments.
+# Libraries or other executables should do this.
+#
 # This module serves as a mixin for Ruby Command Line Applications (CLI).
 # Ruby commands can be written much easier by including this class and following
 # the convention that I have outlined here.
@@ -23,11 +36,19 @@ module RubyCLI
 	def initialize(default_argv)
 		@default_argv = default_argv
 		@default_options = {:help => false, :verbose => false}
-		@arguments = {}
-		@options = {}
+		define_command_options
+		define_command_arguments
 		@opt_parser = nil
 	end
 
+	# This method can be overwritten if you want to set defaults for your command
+	# specific options.
+	def define_command_options() @options = {} end
+	
+	# This method can be overwritten if you want to set defaults for your command
+	# specific arguments.
+	def define_command_arguments() @arguments = {} end
+	
 	# Run the application
   def run
     if parse_options? && arguments_valid?
@@ -39,7 +60,7 @@ module RubyCLI
       output_help(1)
     end
   end
-	
+		
 	# Parse the options
 	def parse_options?
 		raise "This method should be overwritten." 
@@ -70,12 +91,12 @@ module RubyCLI
 
 	def output_options_and_arguments
     puts "OPTIONS:"
-    @options.each {|name, value| puts "\t#{name} = #{value}"}
-		puts "\tNo options" if @options.length == 0
+    @options.each {|name, value| puts "#{name} = #{value}"}
+		puts "tNo options" if @options.length == 0
 		
 		puts "ARGUMENTS:"
-    @arguments.each {|name,value| puts "\t#{name} = #{value}"}
-		puts "\tNo arguments" if @arguments.length == 0
+    @arguments.each {|name,value| puts "#{name} = #{value}"}
+		puts "No arguments" if @arguments.length == 0
   end
 
 	# Performs post-parse processing on options
