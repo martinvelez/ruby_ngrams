@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_ngrams.rb"))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "ruby_cli.rb"))
+require 'ruby_cli'
+require 'ruby_ngrams'
 
 class App
 	include RubyCLI	
@@ -32,16 +32,13 @@ class App
 		@opt_parser.parse!(@default_argv) rescue return false
 		true
 	end
-	
-	def process_options() true end
-
-	# If arguments were provided, then they have to be names of files.
-	# These files will be handled using Ruby's ARGF builtin variable.
-	# If arguments are not filenames, then this application will produce a 
-	# a runtime error informing the user that the given file could not be opened.
-	def process_arguments()	true end
 
 	def command
+		# If arguments were provided, then they have to be names of files.
+		# These files will be handled using Ruby's ARGF builtin variable.
+		# If arguments are not filenames, then this application will produce a 
+		# a runtime error informing the user that the given file could not be opened.
+	
 		# ARGF is a stream designed for use in scripts that process files given as 
 		#	command-line arguments or passed in via STDIN.
 		# The arguments passed to your script are stored in the ARGV Array, 
