@@ -1,4 +1,4 @@
-#!/usr/bin/ruby -w
+#!/usr/bin/env ruby
 
 require 'ruby_cli'
 require 'ruby_ngrams'
@@ -8,10 +8,11 @@ class App
 
 	def define_command_options() @options = {:regex => //, :n => 2}	end
 
-	# Define an OptionParser to parse the command line
-	def parse_options?
+	# Redefining the RubyCLI define_option_parser method
+	# Need to tell the OptionParser how to handle this command specific options.
+	def define_option_parser
 		#configure an OptionParser
-		@opt_parser = OptionParser.new do |opts|		
+		OptionParser.new do |opts|		
 			opts.banner = "Usage: #{__FILE__} [OPTIONS]... [FILE]..."
 			opts.separator ""
 			opts.separator "Specific options:"
@@ -25,12 +26,10 @@ class App
 			opts.on('-n', '--n NUM', Integer, 'set length n for n-grams') do |n|
 				@options[:n] = n
 			end
-			opts.on('-r', '--regex REGEX', Regexp, 'set regex to split string into tokens') do |r|
+			opts.on('-r', '--regex "REGEX"', Regexp, 'set regex to split string into tokens') do |r|
 				@options[:regex] = r
 			end
 		end
-		@opt_parser.parse!(@default_argv) rescue return false
-		true
 	end
 
 	def command
@@ -52,7 +51,7 @@ end
 
 
 if __FILE__ == $0
-	app = App.new(ARGV)
+	app = App.new(ARGV, __FILE__)
 	app.run
 end
 
