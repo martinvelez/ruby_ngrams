@@ -1,18 +1,84 @@
 = ruby_ngrams
 
-== License
+Author:: Martin Velez
+Copyright:: Copyright (c) 2011 Martin Velez
+License:: Distributed under the same terms as Ruby
 
-Copyright 2011 Martin Velez
+= Description 
 
-== Features
+ruby_ngrams is an extension of Ruby's core String class.  It provides a String
+object with the capability to produce n-grams.
 
-* parses a string into a set of n-grams
+From Wikipedia, 
+ "In the fields of computational linguistics and probability, an n-gram is a 
+ contiguous sequence of n items from a given sequence of text or speech. The 
+ items in question can be phonemes, syllables, letters, words or base pairs 
+ according to the application. n-grams are collected from a text or speech corpus.
 
-== Installation
+ An n-gram of size 1 is referred to as a "unigram"; size 2 is a "bigram" 
+ (or, less commonly, a "digram"); size 3 is a "trigram"; size 4 is a "four-gram" 
+ and size 5 or more is simply called an "n-gram"." 
 
-* gem install ruby_ngrams
+= Design
 
-== Usage
+Instead of creating another namespace, this task seemed simple enough to merit 
+extending the String class.  A string is a sequence of characters.  
+It can be words, binary code, sentences, paragraphs, etc.  In short, 
+anything that you can store in a Ruby String object can be parsed into
+n-grams of length n. 
 
-usage goes here
+The main method being added to the String class is ngrams().  It produces an 
+array of n-grams from a Ruby String object.
 
+For example, let s be a Ruby String object.
+Then s.ngrams() returns array of n-grams of from s. 
+
+Tokenization of s is set to single characters by default.
+For example, if s = "Hello World!", 
+then the tokens of s are ["H","e","l","l","o"," ","W","o","r","l","d","!"].
+By specifying a regular expression, you can tokenize the string s in many
+different and useful ways.  
+
+If you set n = 4, then 
+s.ngrams = [["H", "e", "l", "l"], 
+["e", "l", "l", "o"], 
+["l", "l", "o", " "], 
+["l", "o", " ", "W"], 
+["o", " ", "W", "o"], 
+[" ", "W", "o", "r"], 
+["W", "o", "r", "l"], 
+["o", "r", "l", "d"], 
+["r", "l", "d", "!"]].
+Each item in the s.ngrams array can joined but doesn't need to be. 
+If you want to join them, normally you can do so easily if it is text.  
+Be careful if you are trying to join n-grams with non-printable characters.
+
+You can google "n-grams" to get more information about how n-grams are useful.
+
+= Installation
+
+gem install ruby_ngrams
+
+= Alternative Tools
+
+This is another tool I found but which did too much.  I only wanted 
+to produce n-grams from a string.
+1. raingrams[https://github.com/postmodern/raingrams]
+
+= Usage
+
+./ruby_ngrams --
+
+= Dependencies
+
+* Ruby 1.9.1 or greater
+* ruby_cli[https://github.com/martinvelez/ruby_cli] to run the gem executable
+
+= TODO
+
+* Test to determine limits of current approach which parses and stores n-grams
+in memory. 
+
+= Source Code
+
+https://github.com/martinvelez/ruby_ngrams
