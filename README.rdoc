@@ -67,7 +67,11 @@ to produce n-grams from a string.
 
 = Usage
 
-./ruby_ngrams --
+You can simply run the executable and provide input via STDIN. 
+ ruby_ngrams 
+
+You can also provide input via one or more filenames
+ ruby_ngrams [FILES]
 
 = Dependencies
 
