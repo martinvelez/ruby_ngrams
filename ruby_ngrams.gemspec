@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = 'ruby_ngrams'
-	s.version = '0.0.3'
+	s.version = '0.0.4'
 	s.executables = ['ruby_ngrams']
 	s.date = '2011-11-29'
 	s.summary = "Parses a string into n-grams"
