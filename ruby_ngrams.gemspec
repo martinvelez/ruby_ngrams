@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
 	s.name = 'ruby_ngrams'
-	s.version = '0.0.4'
+	s.version = '0.0.5'
 	s.executables = ['ruby_ngrams']
-	s.date = '2011-11-29'
+	s.date = '2011-11-30'
 	s.summary = "Parses a string into n-grams"
 	s.description = "A simple extension of the Ruby core string class to parse a string into n-grams"
 	s.authors = ["Martin Velez"]
