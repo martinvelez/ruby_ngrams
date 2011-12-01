@@ -49,9 +49,6 @@ class App
 
 end
 
-
-if __FILE__ == $0
-	app = App.new(ARGV, __FILE__)
-	app.run
-end
+app = App.new(ARGV, __FILE__)
+app.run
 
