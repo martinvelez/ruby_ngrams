@@ -6,29 +6,14 @@ require 'ruby_ngrams'
 class App
 	include RubyCLI	
 
-	def define_command_options() @options = {:regex => //, :n => 2}	end
+	def initialize_command_options() @options = {:regex => //, :n => 2}	end
 
-	# Redefining the RubyCLI define_option_parser method
-	# Need to tell the OptionParser how to handle this command specific options.
-	def define_option_parser
-		#configure an OptionParser
-		OptionParser.new do |opts|		
-			opts.banner = "Usage: #{__FILE__} [OPTIONS]... [FILE]..."
-			opts.separator ""
-			opts.separator "Specific options:"
-			opts.on('-h', '--help', 'displays help information') do
-				@default_options[:help] = true
-				output_help
-			end
-			opts.on('-V','--verbose','Run verbosely') do 
-				@default_options[:verbose] = true
-			end
-			opts.on('-n', '--n NUM', Integer, 'set length n for n-grams') do |n|
-				@options[:n] = n
-			end
-			opts.on('-r', '--regex "REGEX"', Regexp, 'set regex to split string into tokens') do |r|
-				@options[:regex] = r
-			end
+	def define_command_option_parsing
+		@opt_parser.on('-n', '--n NUM', Integer, 'set length n for n-grams') do |n|
+			@options[:n] = n
+		end
+		@opt_parser.on('-r', '--regex "REGEX"', Regexp, 'set regex to split string into tokens') do |r|
+			@options[:regex] = r
 		end
 	end
 
