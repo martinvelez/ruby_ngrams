@@ -59,14 +59,13 @@ Be careful if you are trying to join n-grams with non-printable characters.
 You can google "n-grams" to get more information about how n-grams are useful.
 
 = Installation
-
-gem install ruby_ngrams
+ gem install ruby_ngrams
 
 = Alternative Tools
 
 This is another tool I found but which did too much.  I only wanted 
 to produce n-grams from a string.
-1. raingrams[https://github.com/postmodern/raingrams]
+* raingrams[https://github.com/postmodern/raingrams]
 
 = Usage
 
@@ -83,9 +82,8 @@ You can also provide input via one or more filenames
 
 = TODO
 
-* Test to determine limits of current approach which parses and stores n-grams
-in memory. 
+* Test to determine limits of current approach which parses and stores n-grams 
+ in memory. 
 
 = Source Code
-
-https://github.com/martinvelez/ruby_ngrams
+ https://github.com/martinvelez/ruby_ngrams
