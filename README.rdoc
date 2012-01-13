@@ -82,8 +82,7 @@ You can also provide input via one or more filenames
 
 = TODO
 
-* Test to determine limits of current approach which parses and stores n-grams 
- in memory. 
+* Test to determine limits of current approach which parses and stores n-grams in memory. 
 
 = Source Code
  https://github.com/martinvelez/ruby_ngrams
