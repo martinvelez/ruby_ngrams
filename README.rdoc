@@ -34,21 +34,24 @@ For example, let s be a Ruby String object.
 Then s.ngrams() returns array of n-grams of from s. 
 
 Tokenization of s is set to single characters by default.
-For example, if s = "Hello World!", 
-then the tokens of s are ["H","e","l","l","o"," ","W","o","r","l","d","!"].
+For example, if 
+ s = "Hello World!", 
+then the tokens of s are 
+ ["H","e","l","l","o"," ","W","o","r","l","d","!"].
 By specifying a regular expression, you can tokenize the string s in many
 different and useful ways.  
 
 If you set n = 4, then 
-s.ngrams = [["H", "e", "l", "l"], 
-["e", "l", "l", "o"], 
-["l", "l", "o", " "], 
-["l", "o", " ", "W"], 
-["o", " ", "W", "o"], 
-[" ", "W", "o", "r"], 
-["W", "o", "r", "l"], 
-["o", "r", "l", "d"], 
-["r", "l", "d", "!"]].
+ s.ngrams = [["H", "e", "l", "l"], 
+ ["e", "l", "l", "o"], 
+ ["l", "l", "o", " "], 
+ ["l", "o", " ", "W"], 
+ ["o", " ", "W", "o"], 
+ [" ", "W", "o", "r"], 
+ ["W", "o", "r", "l"], 
+ ["o", "r", "l", "d"], 
+ ["r", "l", "d", "!"]].
+
 Each item in the s.ngrams array can joined but doesn't need to be. 
 If you want to join them, normally you can do so easily if it is text.  
 Be careful if you are trying to join n-grams with non-printable characters.
