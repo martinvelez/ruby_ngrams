@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'ruby_cli'
-require 'ruby_ngrams'
+#require 'ruby_ngrams'
+require '../lib/ruby_ngrams.rb'
 
 class App
 	include RubyCLI	
